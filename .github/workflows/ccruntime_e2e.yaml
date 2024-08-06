@@ -24,7 +24,7 @@ jobs:
         instance:
           - "az-ubuntu-2004"
           - "az-ubuntu-2204"
-          - "s390x"
+          - "s390x-large"
           - "tdx"
           - "sev"
           - "sev-snp"
