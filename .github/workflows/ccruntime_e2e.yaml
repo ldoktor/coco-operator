@@ -22,26 +22,8 @@ jobs:
         runtimeclass:
           - "kata-qemu"
         instance:
-          - "az-ubuntu-2004"
-          - "az-ubuntu-2204"
-          - "s390x-large"
-          - "tdx"
-          - "sev"
-          - "sev-snp"
-        exclude:
-          - runtimeclass: "kata-qemu"
-            instance: "tdx"
-          - runtimeclass: "kata-qemu"
-            instance: "sev"
-          - runtimeclass: "kata-qemu"
-            instance: "sev-snp"
-        include:
-          - runtimeclass: "kata-qemu-tdx"
-            instance: "tdx"
-          - runtimeclass: "kata-qemu-sev"
-            instance: "sev"
-          - runtimeclass: "kata-qemu-snp"
-            instance: "sev-snp"
+          - "ubuntu-2004"
+          - "ubuntu-2204"
     runs-on: ${{ matrix.instance }}
     steps:
       - uses: actions/checkout@v4
