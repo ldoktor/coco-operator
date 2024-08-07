@@ -21,7 +21,11 @@ jobs:
       matrix:
         runtimeclass:
           - "kata-qemu"
-    runs-on: ubuntu-latest
+        instance:
+          - ubuntu-2004
+          - ubuntu-2204
+          - ubuntu-latest
+    runs-on: ${{ matrix.instance }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,7 +41,30 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update -y
+          sudo apt-get remove docker* containerd* -y
+          #sudo apt-get remove haveged* heroku* mediainfo* mercurial* microsoft* firefox* google* mono* r-* azure* php* mysql* mssql* postgresql* powershell*
+          #sudo rm -Rf /usr/local/share/chromium
+          #sudo rm -Rf /usr/local/share/powershell
+          #sudo du -hs /usr/local/share/* || true
+          #sudo du -hs /mnt/* || true
+          sudo rm -Rf /var/lib/docker || true
+          sudo mkdir /mnt/docker || true
+          sudo ln -s /mnt/docker /var/lib/docker || true
+          #sudo rm -Rf /run/containerd
+          #sudo mkdir /mnt/containerd
+          #sudo ln -s /mnt/containerd /run/containerd
+          #mount
+          #df -h
+          #ls -al /var/run/
+          #sudo chmod 777 /var/run/docker.sock
+          #which docker
+          #docker version
+          #systemctl status docker
+          #sudo systemctl start docker
+          #systemctl status docker
+          #sudo pip3 install -U requests==2.20.1 docker==3.1.1
           sudo apt-get install -y ansible python-is-python3
+        shell: /usr/bin/bash -x {0}
 
       - name: Run e2e tests
         timeout-minutes: 45

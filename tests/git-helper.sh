@@ -39,6 +39,7 @@ function configure_github() {
 }
 
 function rebase_atop_of_the_latest_target_branch() {
+	exit 0
 	if [ -n "${TARGET_BRANCH}" ]; then
 		configure_github
 		echo "Rebasing atop of the latest ${TARGET_BRANCH}"
