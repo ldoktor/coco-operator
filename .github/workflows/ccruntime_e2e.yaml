@@ -21,10 +21,7 @@ jobs:
       matrix:
         runtimeclass:
           - "kata-qemu"
-        instance:
-          - "ubuntu-2004"
-          - "ubuntu-2204"
-    runs-on: ${{ matrix.instance }}
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
