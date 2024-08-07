@@ -51,7 +51,7 @@ jobs:
           if [ $RUNNING_INSTANCE = "s390x" ]; then
             args=""
           fi
-          ./run-local.sh -t -r "${{ matrix.runtimeclass }}" "${args}"
+          bash -x ./run-local.sh -t -r "${{ matrix.runtimeclass }}" "${args}"
         env:
           RUNNING_INSTANCE: ${{ matrix.instance }}
           GITHUB_TOKEN: ${{ github.token }}
