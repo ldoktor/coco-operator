@@ -139,6 +139,9 @@ install_ccruntime() {
 		cmd+="egrep -q ${pod}.*'\<Running\>'"
 		if ! wait_for_process 600 30 "$cmd"; then
 			echo "::error:: $pod pod is not running"
+			kubectl get all -o yaml
+			echo "::error:: NS"
+			kubectl get all -n "$op_ns" -o yaml
 			local pod_id
 			pod_id="$(get_pods_regex "$pod" "$op_ns")"
 			echo "::debug:: Pod $pod_id"
@@ -163,7 +166,7 @@ install_ccruntime() {
 #
 uninstall_ccruntime() {
 	pushd "${ccruntime_overlay_basedir}/${ccruntime_overlay}" >/dev/null
-	kubectl delete -k .
+	kubectl -v=8 delete -k .
 	popd >/dev/null
 
 	# Wait and ensure ccruntime pods are gone
@@ -171,7 +174,7 @@ uninstall_ccruntime() {
 	local cmd="_OUT=\$(sudo -E kubectl get pods -n '$op_ns')"
 	cmd+=" && ! echo \$_OUT | grep -q -e cc-operator-daemon-install"
 	cmd+=" -e cc-operator-pre-install-daemon"
-	if ! wait_for_process 720 30 "$cmd"; then
+	if ! wait_for_process 180 30 "$cmd"; then
 		echo "::error:: there are ccruntime pods still running"
 		echo "::group::Describe pods from $op_ns namespace"
 		kubectl -n "$op_ns" describe pods || true
@@ -241,7 +244,7 @@ start_local_registry() {
 #
 uninstall_operator() {
 	pushd "$project_dir" >/dev/null
-	kubectl delete -k config/default
+	kubectl -v=8 delete -k config/default
 	popd >/dev/null
 
 	# Wait and ensure the controller pod is gone
@@ -291,6 +294,27 @@ wait_for_stabilization() {
 		((count+=1))
 		sleep 21
 	done
+	echo cc-operator-pre-install-daemon
+	echo
+	kubectl logs -n "$op_ns" ds/cc-operator-pre-install-daemon || true
+	echo
+	echo cc-operator-daemon-install
+	echo
+	kubectl logs -n "$op_ns" ds/cc-operator-daemon-install || true
+	echo
+	echo
+	df -h
+	kubectl -n "$op_ns" get all
+	timeout 360 bash -x "${script_dir}/operator.sh" uninstall || echo "::error:: LDOKTOR - uninstall 1 failed"
+	kubectl -n "$op_ns" get all
+	timeout 360 bash -x "${script_dir}/operator.sh" uninstall || echo "::error:: LDOKTOR - uninstall 2 failed"
+	kubectl -n "$op_ns" get all
+	timeout 360 bash -x "${script_dir}/operator.sh" uninstall || echo "::error:: LDOKTOR - uninstall 3 failed"
+	kubectl -n "$op_ns" get all
+	timeout 360 bash -x "${script_dir}/operator.sh" uninstall || echo "::error:: LDOKTOR - uninstall 4 failed"
+	kubectl -n "$op_ns" get all
+	timeout 360 bash -x "${script_dir}/operator.sh" uninstall || echo "::error:: LDOKTOR - uninstall 5 failed"
+	kubectl -n "$op_ns" get all
 }
 
 
