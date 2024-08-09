@@ -263,7 +263,7 @@ metadata:
     capabilities: Basic Install
     categories: Security
     containerImage: quay.io/confidential-containers/operator:v0.9.0
-    createdAt: "2024-08-06T14:14:00Z"
+    createdAt: "2024-08-09T15:13:35Z"
     operators.operatorframework.io/builder: operator-sdk-v1.30.0
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
   name: cc-operator.v0.9.0
